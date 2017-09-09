@@ -1,0 +1,12 @@
+{
+  "dependencies": {
+    "express": "^4.15.4",
+    "redis": "^2.8.0"
+  },
+  "name": "weather-api",
+  "version": "1.0.0",
+  "description": "API server in Node.js",
+  "main": "index.js",
+  "author": "Chun Yu",
+  "license": "BSD"
+}
