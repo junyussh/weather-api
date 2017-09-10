@@ -1,10 +1,20 @@
 var app = require("express")();
 var redis = require("redis");
-var port = "8080"; 
-var router = require("./router/api.js";)
-var redisClient = redis.createClient({host: "localhost", port: "6379"});
+var assert = require("assert");
+var config = require("./config.json");
+var port = config.server.port; 
+var router = require("./router/api.js");
+var redisClient = redis.createClient({host: config.database.host, port: config.database.port});
+
 redisClient.on('ready',function() {
  console.log("Redis is ready");
+ redisClient.exists(config.database.key ,function(err,reply) {
+ if(!err) {
+  if(reply === 1) {
+   assert(reply === 1,"The key "+config.database.key+" exists, please modifiy the key in config.json");
+  }
+ }
+});
 });
 
 redisClient.on('error',function() {
