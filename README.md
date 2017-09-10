@@ -1,6 +1,7 @@
 # Weather API Server
 
 A pure and light Weather API server build with [Express](http://expressjs.com/) framwork, based on [Node.js](https://nodejs.org) and [Redis](https://redis.io/).
+
 The application is under [Weather Station](https://github.com/oxygen-TW/Weather-Station) project.
 
 ## Requirment
@@ -22,8 +23,10 @@ yarn install # use Yarn
 ## Configature
 
 Edit ```config.json``` in root dictionary.
+
 This is the ```config.json``` example.
-```json
+
+```
 {
     "server": {
         "port": "8080" // Application Port
@@ -44,6 +47,6 @@ This is the ```config.json``` example.
  - [Redis 教程 | 菜鸟教程](http://www.runoob.com/redis/redis-tutorial.html)
  - [資料庫的好夥伴：Redis | TechBridge 技術共筆部落格](http://blog.techbridge.cc/2016/06/18/redis-introduction/)
 
-##License
+## License
 
 [BSD License](https://opensource.org/licenses/bsd-license.php)
