@@ -1,4 +1,5 @@
 {
+  "repository": "https://github.com/junyussh/weather-api.git",
   "dependencies": {
     "express": "^4.15.4",
     "redis": "^2.8.0"
@@ -8,5 +9,5 @@
   "description": "API server in Node.js",
   "main": "index.js",
   "author": "Chun Yu",
-  "license": "BSD"
+  "license": "BSD-3-Clause"
 }
