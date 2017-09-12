@@ -28,9 +28,9 @@ This is the ```config.json``` example.
 
 ```
 {
-	"info": { // you can add more details
-		"location": "NHSH" // your location
-	}
+    "info": { // you can add more details
+        "location": "NHSH" // your location
+    },
     "server": {
         "port": "8080" // Application Port
     },
