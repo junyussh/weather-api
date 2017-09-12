@@ -1,10 +1,14 @@
 {
+	"info": {
+		"location": "NHSH"
+	},
     "server": {
         "port": "8080"
     },
     "database": {
         "key": "weather",
         "host": "127.0.0.1",
-        "port": "6379"
+        "port": "6379",
+        "password": ""
     }
 }

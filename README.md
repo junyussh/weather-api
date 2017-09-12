@@ -28,6 +28,9 @@ This is the ```config.json``` example.
 
 ```
 {
+	"info": { // you can add more details
+		"location": "NHSH" // your location
+	}
     "server": {
         "port": "8080" // Application Port
     },
@@ -37,6 +40,13 @@ This is the ```config.json``` example.
         "port": "6379"
     }
 }
+```
+
+## Usage
+
+```
+GET <host>:<port>/api // get your data in json string
+POST <host>:<port>/api // write data to the Redis database
 ```
 
 ## Reference
