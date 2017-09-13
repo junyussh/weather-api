@@ -44,9 +44,20 @@ This is the ```config.json``` example.
 
 ## Usage
 
+### Basic 
+
 ```
 GET <host>:<port>/api // get your data in json string
 POST <host>:<port>/api // write data to the Redis database
+```
+
+### Params
+
+#### size
+The query string ```size``` can limit the number of records the API server get.
+
+```
+GET <host>:<port>/api?size=3 // return 3 records
 ```
 
 ## Reference

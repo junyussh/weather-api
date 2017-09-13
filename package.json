@@ -9,5 +9,9 @@
   "description": "API server in Node.js",
   "main": "index.js",
   "author": "Chun Yu",
-  "license": "BSD-3-Clause"
+  "license": "BSD-3-Clause",
+  "devDependencies": {
+    "eslint-config-airbnb-base": "^12.0.0",
+    "eslint-plugin-import": "^2.7.0"
+  }
 }

@@ -6,7 +6,7 @@ var redisClient = redis.createClient({
 });
 
 var data = {
-    savedata: function(requestData, key, callback) {
+    saveData: function(requestData, key, callback) {
         redisClient.rpush([key, requestData], callback);
     },
     getLength: function(key, callback) {
@@ -14,6 +14,14 @@ var data = {
             if (!err) {
                 return callback(reply);
             }
+        });
+    },
+    getData: function(key, number, callback) {
+        this.getLength(key, (length) => {
+        	if (number > length) {
+        		number = length;
+        	}
+            redisClient.lrange([key, length - number, length], callback);
         });
     },
     getAlldata: function(key, callback) {
