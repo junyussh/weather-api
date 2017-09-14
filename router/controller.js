@@ -2,7 +2,6 @@ var app = require("express");
 var Data = require("../model/data.model.js");
 var config = require("../config.json");
 var require_field = ["tempature", "humidity", "light", "UV", "rainfall"];
-var async = require("async");
 
 function vaild_field(requestData, callback) {
     var result = [];

@@ -1,6 +1,11 @@
 {
+	"user": {
+		"username": "weather_station",
+		"password": "123456"
+	},
 	"info": {
-		"location": "NHSH"
+		"location": "NHSH",
+		"_id": "nhsh",
 	},
     "server": {
         "port": "8080"

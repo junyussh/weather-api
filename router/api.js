@@ -1,7 +1,6 @@
 var app = require("express");
 var router = app.Router();
 var config = require("../config.json");
-var async = require("async");
 var Data = require("./controller");
 
 var key;
