@@ -8,7 +8,7 @@
 		"_id": "nhsh"
 	},
     "server": {
-        "port": "8000"
+        "port": "8080"
     },
     "database": {
         "key": "weather",

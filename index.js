@@ -3,7 +3,7 @@ var redis = require("redis");
 var assert = require("assert");
 var config = require("./config.json");
 var port = config.server.port;
-var router = require("./router/api.js");
+var api = require("./router/api.js");
 var redisClient = redis.createClient({
     host: config.database.host,
     port: config.database.port,
@@ -32,6 +32,6 @@ app.use("/", function(req, res, next) {
 app.get("/", function(req, res) {
     res.send("<h1>Welcome to use API server</h1>");
 });
-app.use("/api", router);
+app.use("/api", api);
 app.listen(process.env.PORT || port);
 console.log("APP started on port:" + port);

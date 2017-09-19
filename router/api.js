@@ -30,7 +30,7 @@ router.route("/")
     .get(function(req, res) {
         if (req.query.size) {
             req.query.size = parseInt(req.query.size);
-            Data.getData(req, res);
+            Data.getDatusera(req, res);
         } else {
             Data.getAllData(req, res);
         }
@@ -38,5 +38,11 @@ router.route("/")
     .post(function(req, res) {
         Data.saveData(req, res);
     });
-
+router.route("/user")
+    .get(function(req, res) {
+        console.log("test");
+        res.json({
+            message: "hello"
+        });
+    });
 module.exports = router;
