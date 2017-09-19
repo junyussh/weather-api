@@ -1,7 +1,7 @@
 var app = require("express");
 var Data = require("../model/data.model.js");
 var config = require("../config.json");
-var require_field = ["tempature", "humidity", "light", "UV", "rainfall"];
+var require_field = ["temperature", "humidity", "light", "UV", "rainfall"];
 
 function vaild_field(requestData, callback) {
     var result = [];
@@ -15,9 +15,9 @@ function vaild_field(requestData, callback) {
 
 exports.getAllData = (req, res) => {
     var value = {};
-    Data.getAlldata(config.database.key + req.key + ".tempature", (err, callback) => {
+    Data.getAlldata(config.database.key + req.key + ".temperature", (err, callback) => {
         if (!err) {
-            value.tempature = callback;
+            value.temperature = callback;
         } else {
             res.json(err);
         }
@@ -77,9 +77,10 @@ exports.getAllData = (req, res) => {
 
         result.data = [];
         result.request_times = value.request_times;
-        for (var i = 0; i < value.tempature.length; i++) {
+        console.log(value);
+        for (var i = 0; i < value.temperature.length; i++) {
             result.data.push({
-                tempature: value.tempature[i],
+                temperature: value.temperature[i],
                 humidity: value.humidity[i],
                 light: value.light[i],
                 UV: value.UV[i],
@@ -93,9 +94,9 @@ exports.getAllData = (req, res) => {
 };
 exports.getData = (req, res) => {
     var value = {};
-    Data.getData(config.database.key + req.key + ".tempature", req.query.size, (err, callback) => {
+    Data.getData(config.database.key + req.key + ".temperature", req.query.size, (err, callback) => {
         if (!err) {
-            value.tempature = callback;
+            value.temperature = callback;
         } else {
             res.json(err);
         }
@@ -155,9 +156,9 @@ exports.getData = (req, res) => {
 
         result.data = [];
         result.request_times = value.request_times;
-        for (var i = 0; i < value.tempature.length; i++) {
+        for (var i = 0; i < value.temperature.length; i++) {
             result.data.push({
-                tempature: value.tempature[i],
+                temperature: value.temperature[i],
                 humidity: value.humidity[i],
                 light: value.light[i],
                 UV: value.UV[i],
@@ -174,11 +175,11 @@ exports.saveData = (req, res) => {
         if (vaild.length === 0) {
             var time = new Date().toISOString();
             var result = {};
-            Data.saveData(req.jsonBody.tempature, config.database.key + req.key + ".tempature", function(err, callback) {
+            Data.saveData(req.jsonBody.temperature, config.database.key + req.key + ".temperature", function(err, callback) {
                 if (!err) {
-                    result.tempature = true;
+                    result.temperature = true;
                 } else {
-                    result.tempature = false;
+                    result.temperature = false;
                 }
             });
             Data.saveData(req.jsonBody.humidity, config.database.key + req.key + ".humidity", function(err, callback) {
@@ -217,7 +218,7 @@ exports.saveData = (req, res) => {
                     result.time = false;
                 }
             });
-            Data.getLength(config.database.key + req.key + ".tempature", (callback) => {
+            Data.getLength(config.database.key + req.key + ".temperature", (callback) => {
                 result.record = callback;
             });
 

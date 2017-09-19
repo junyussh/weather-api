@@ -5,10 +5,10 @@
 	},
 	"info": {
 		"location": "NHSH",
-		"_id": "nhsh",
+		"_id": "nhsh"
 	},
     "server": {
-        "port": "8080"
+        "port": "8000"
     },
     "database": {
         "key": "weather",
