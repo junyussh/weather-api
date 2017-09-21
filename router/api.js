@@ -2,7 +2,8 @@ var app = require("express");
 var router = app.Router();
 var config = require("../config.json");
 var Data = require("./controller");
-
+var User = require("./user.controller");
+var jwt = require("jwt-simple");
 var key;
 router.use(function(req, res, next) {
     if (req.query.key) {
@@ -44,5 +45,8 @@ router.route("/user")
         res.json({
             message: "hello"
         });
+    })
+    .post(function(req, res) {
+        User.vaildUser(req, res);
     });
 module.exports = router;
