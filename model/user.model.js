@@ -7,7 +7,8 @@ var redisClient = redis.createClient({
 });
 
 var user = {
-	createUser: function(request, key, callback) {
-		redisClient.hset([key, "username", request.username, "password", request.password, "key", request.key, "location": request.location], callback);
-	}
+    createUser: function(key, request, callback) {
+        redisClient.hset([config.database.key + "." + key, "username", request.username, "password", request.password, "key", request.key, "email", request.email, "address", request.address, "location", request.location], callback);
+    }
 }
+module.exports = user;

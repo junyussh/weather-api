@@ -47,6 +47,6 @@ router.route("/user")
         });
     })
     .post(function(req, res) {
-        User.vaildUser(req, res);
+        User.createUser(req, res);
     });
 module.exports = router;

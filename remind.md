@@ -36,5 +36,6 @@ If failed to request the API server, you should resign a token.
 username: "admin",
 password: "123456",
 key: "1234567890",
+address: "",
 location: "Neihu"
 }
