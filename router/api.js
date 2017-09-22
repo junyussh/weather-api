@@ -31,7 +31,7 @@ router.route("/")
     .get(function(req, res) {
         if (req.query.size) {
             req.query.size = parseInt(req.query.size);
-            Data.getDatusera(req, res);
+            Data.getData(req, res);
         } else {
             Data.getAllData(req, res);
         }

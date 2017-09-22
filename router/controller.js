@@ -77,7 +77,6 @@ exports.getAllData = (req, res) => {
 
         result.data = [];
         result.request_times = value.request_times;
-        console.log(value);
         for (var i = 0; i < value.temperature.length; i++) {
             result.data.push({
                 temperature: value.temperature[i],
