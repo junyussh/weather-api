@@ -19,16 +19,13 @@ var user = {
             redisClient.lrange([config.database.key+".user."+field, 0, length], callback);
         });
     },
-    ifUserFieldExist: function(field, _content) {
-    	this.getAllUserField(field, (err, field) => {
-    		for (var i = field.length - 1; i >= 0; i--) {
-    			if(field[i] == _content) {
-    				return true;
-    			} else {
-    				return false;
-    			}
-    		}
-    	});
+    ifUserFieldExist: function(_field, _content) {
+    	return new Promise(function(reslove, reject) {
+    		console.log(_field);
+    		user.getAllUserField(_field, (err, field) => {
+    			reslove(field.indexOf(_content) != -1);
+    		});
+    	})
     }
 }
 module.exports = user;
