@@ -32,7 +32,8 @@ exports.createUser = async function(req, res) {
             info.password = crypto.createHash('sha256').update(req.jsonBody.password).digest('base64');
             info.APIKey = keys.key;
         });
-
+        let code = await User.ifUserFieldExist("username", info.username);
+        console.log("code: "+code);
         if (await User.ifUserFieldExist("username", info.username)) {
         	console.log("username");
             result.error = true;
@@ -43,7 +44,6 @@ exports.createUser = async function(req, res) {
             result.message = "Email existed!"
         }
         setTimeout(() => {
-            console.log(result.error);
             if (!result.error) {
                 User.createUser(info._id, info, (err, callback) => {
                     if (!err) {
