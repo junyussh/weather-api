@@ -17,10 +17,9 @@ exports.getAllUserField = async function (field, callback) {
         redisClient.lrange([config.database.key + ".user." + field, 0, length], callback);
     });
 }
-exports.ifUserFieldExist = async function (_field, _content) {
-    this.getAllUserField(_field, (err, field) => {
+exports.ifUserFieldExist = async function (_field, _content, callback) {
+    this.getAllUserField(_field, async (err, field) => {
         let code = field.indexOf(_content) != -1;
-        console.log(code);
-        return code;
+        callback(code);
     });
 }
