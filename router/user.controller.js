@@ -4,11 +4,7 @@ var config = require("../config.json");
 var crypto = require("crypto");
 var uuid = require("uuid/v1");
 var CheckField = async function (field, value) {
-    User.ifUserFieldExist(field, value, (e) => {
-        let code = e;
-        console.log("field: " + field + " code: " + code);
-        return code;
-    });
+    return await User.ifUserFieldExist(field, value);
 }
 var APIKey = async function () {
     var user = {};
@@ -32,6 +28,7 @@ exports.createUser = async function (req, res) {
     var result = {};
     var info = {};
     // Generate Keys
+    /*
     APIKey().then(async (keys) => {
         info._id = keys._id;
         info.username = req.jsonBody.username;
@@ -40,14 +37,14 @@ exports.createUser = async function (req, res) {
         info.APIKey = keys.key;
     })
         .then(async function () {
-            await CheckField("username", info.username).then((username) => {
+            CheckField("username", info.username).then((username) => {
                 console.log("user:"+username);
                 if (username == true) {
                     result.error = true;
                     result.message = "Username existed!"
                 }
             });
-            await CheckField("email", info.email).then((email) => {
+            CheckField("email", info.email).then((email) => {
                 if (email == true) {
                     console.log("email");
                     result.error = true;
@@ -57,28 +54,28 @@ exports.createUser = async function (req, res) {
         }).then(()=> {
 
         });
-    /*
-    APIKey(async (keys) => {
+        */
+        let keys = APIKey();
         info._id = keys._id;
         info.username = req.jsonBody.username;
         info.email = req.jsonBody.email;
         info.password = crypto.createHash('sha256').update(req.jsonBody.password).digest('base64');
         info.APIKey = keys.key;
         console.log(info);
-        console.log("code: " + code);
-        if (await CheckField("username", info.username)) {
+
+        let username = await CheckField("username", info.username);
+        let email = await CheckField("email", info.email);
+        console.log("username:"+username);
+        console.log("email:"+email);
+        if (username) {
             console.log("username");
             result.error = true;
             result.message = "Username existed!"
-        } else if (await CheckField("email", info.email)) {
+        } else if (email) {
             console.log("email");
             result.error = true;
             result.message = "Email existed!"
-        }
-    });
-        */
-    setTimeout(() => {
-        if (!result.error) {
+        } else if (!result.error) {
             User.createUser(info._id, info, (err, callback) => {
                 if (!err) {
                     result.error = false;
@@ -89,8 +86,5 @@ exports.createUser = async function (req, res) {
                 }
             })
         }
-    }, 10);
-    setTimeout(() => {
         res.json(result);
-    }, 30);
 }
