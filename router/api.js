@@ -5,7 +5,7 @@ var Data = require("./controller");
 var User = require("./user.controller");
 var jwt = require("jwt-simple");
 var key;
-router.use(function(req, res, next) {
+router.use(function (req, res, next) {
     if (req.query.key) {
         key = "." + req.query.key;
         req.key = key;
@@ -15,10 +15,10 @@ router.use(function(req, res, next) {
     }
     if (req.method == "POST") {
         var data = "";
-        req.on('data', function(chunk) {
+        req.on('data', function (chunk) {
             data += chunk
         });
-        req.on('end', function() {
+        req.on('end', function () {
             req.rawBody = data;
             req.jsonBody = JSON.parse(data);
             next();
@@ -28,25 +28,36 @@ router.use(function(req, res, next) {
     }
 });
 router.route("/")
-    .get(function(req, res) {
-        if (req.query.size) {
-            req.query.size = parseInt(req.query.size);
-            Data.getData(req, res);
+    .get(function (req, res) {
+        if (req.query.device && req.query.key) {
+            if (req.query.size) {
+                req.query.size = parseInt(req.query.size);
+                Data.getData(req, res);
+            } else {
+                Data.getAllData(req, res);
+            }
         } else {
-            Data.getAllData(req, res);
+            res.json({
+                error: true,
+                message: "URL/?device=[DeviceID]&key=[APIKey]"
+            });
         }
     })
-    .post(function(req, res) {
+    .post(function (req, res) {
         Data.saveData(req, res);
     });
 router.route("/user")
-    .get(function(req, res) {
+    .get(function (req, res) {
         console.log("test");
         res.json({
             message: "hello"
         });
     })
-    .post(function(req, res) {
+    .post(function (req, res) {
         User.createUser(req, res);
+    });
+router.route("/device")
+    .post(function (req, res) {
+        Device.createDevice(req, res);
     });
 module.exports = router;

@@ -80,6 +80,7 @@ exports.createUser = async function (req, res) {
                 if (!err) {
                     result.error = false;
                     result.message = "User created";
+                    result.key = info.APIKey;
                 } else {
                     result.error = true;
                     result.message = err;

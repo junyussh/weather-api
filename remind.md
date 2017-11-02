@@ -26,8 +26,12 @@ If failed to request the API server, you should resign a token.
 ```weather.users.username```: save the username
 ```weather.users.key```: save user's API key
 ```weather.users._id```: save user's id
-```weather.<id>.devices```: save user's devices id
+```weather.<id>.device```: save user's devices id
+```weather.<id>.device.<deviceID>```: save device's meta
+```weather.device.<deviceID>```: save device data
 ```weather.<id>```: save user's devices' meta and user's information
+```weather.device.id```: save all devices' id
+```weather.device.userID```: save the devices' owner
 
 ## weather.<id>
 
@@ -38,5 +42,23 @@ password: "123456",
 key: "1234567890",
 address: "",
 location: "Neihu"
+}
+```
+
+## 發送 email
+
+當註冊、新增裝置時要發送電子郵件確認
+
+## Add new Device
+
+```weather.device.<id>```
+```weather.device.user```
+
+```javascript
+{
+    location: "",
+    createTime: "",
+    user: "",
+    deviceID: ""
 }
 ```

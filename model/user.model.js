@@ -17,6 +17,22 @@ exports.getAllUserField = function (field, callback) {
         redisClient.lrange([config.database.key + ".user." + field, 0, length], callback);
     });
 }
+exports.getIndex = function(field, value) {
+    this.getAllUserField(field, (err, _field) => {
+        let index = _field.indexOf(value);
+        return new Promise(function(resolve, reject) {
+            resolve(index);
+        });
+    });
+}
+exports.getFieldValue = function(field, value) {
+    this.getAllUserField(field, (err, _field) => {
+        let index = _field.indexOf(value);
+        return new Promise(function(resolve, reject) {
+            resolve(_field(index));
+        });
+    });
+}
 exports.ifUserFieldExist = function (_field, _content) {
     var code;
     this.getAllUserField(_field, (err, field) => {
@@ -24,7 +40,6 @@ exports.ifUserFieldExist = function (_field, _content) {
     });
     return new Promise(function(resolve, reject) {
         setTimeout(()=> {
-        console.log("field:"+_field);
             resolve(code);
         }, 50);
     });
