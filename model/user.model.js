@@ -25,6 +25,13 @@ exports.getIndex = function(field, value) {
         });
     });
 }
+exports.getValue = function(key, index) {
+    redisClient.lindex([config.database.key + ".user." + key], index, function (err, value) {
+        return new Promise(function(resolve, reject) {
+            resolve(value);
+        });
+    });
+}
 exports.getFieldValue = function(field, value) {
     this.getAllUserField(field, (err, _field) => {
         let index = _field.indexOf(value);

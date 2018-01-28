@@ -1,4 +1,5 @@
 {
+    "secret": "12345",
 	"user": {
 		"username": "weather_station",
 		"password": "123456"

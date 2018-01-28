@@ -3,9 +3,18 @@ var User = require("../model/user.model.js");
 var config = require("../config.json");
 var crypto = require("crypto");
 var uuid = require("uuid/v1");
+var jwt = require("jsonwebtoken");
+
 var CheckField = async function (field, value) {
     return await User.ifUserFieldExist(field, value);
 }
+var getIndex = async function(field, value) {
+    return await User.getIndex(field, value);
+}
+var getValue = async function(field, index) {
+    return await User.getValue(field, index);
+}
+
 var APIKey = async function () {
     var user = {};
     do {
@@ -88,4 +97,34 @@ exports.createUser = async function (req, res) {
             })
         }
         res.json(result);
+}
+exports.userLogin = async function (req, res) {
+    var result = {};
+
+    let username = req.jsonBody.username;
+    let password = crypto.createHash('sha256').update(req.jsonBody.password).digest('base64');
+    console.log("here")
+    let index = await getIndex("username", username);
+    console.log("index:" +index)
+    let pass = await getValue("password", index);
+
+    if(pass == password) {
+        let userID = await getValue("id", index);
+        let payload = {
+            username: username,
+            userID: userID,
+            loginTime: new Date().toISOString()
+        }
+        let secret = config.secret;
+        console.log("work")
+        var token = jwt.sign(payload, secret, { expiresIn: '24h' }, (err, token)=> {
+            result.token = token;
+        });
+        result.error = false;
+        result.message = "Enjoy your token.";  
+    } else {
+        result.error = true;
+        result.message = "Invaild username or password."
+    }
+    res.json(result);
 }

@@ -2,6 +2,7 @@ var app = require("express");
 var router = app.Router();
 var config = require("../config.json");
 var Data = require("./controller");
+var Device = require("./device.controller");
 var User = require("./user.controller");
 var jwt = require("jwt-simple");
 var key;
@@ -59,5 +60,16 @@ router.route("/user")
 router.route("/device")
     .post(function (req, res) {
         Device.createDevice(req, res);
+    });
+router.route("/login")
+    .post(function (req, res) {
+        User.userLogin(req, res);
+    })
+    .get(function (req, res) {
+        res.json({
+            error: true,
+            action: "login",
+            message: "Use POST method to login"
+        });
     });
 module.exports = router;

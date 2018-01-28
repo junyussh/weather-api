@@ -25,7 +25,7 @@ If failed to request the API server, you should resign a token.
 
 ```weather.users.username```: save the username
 ```weather.users.key```: save user's API key
-```weather.users._id```: save user's id
+```weather.users.id```: save user's id
 ```weather.<id>.device```: save user's devices id
 ```weather.<id>.device.<deviceID>```: save device's meta
 ```weather.device.<deviceID>```: save device data
@@ -51,8 +51,12 @@ location: "Neihu"
 
 ## Add new Device
 
-```weather.device.<id>```
-```weather.device.user```
+```weather.device.<id>```： devices' unique id
+```weather.device.user```: devices' owner
+
+## God Mode
+
+use the user in `config.json` can modify all device and users.
 
 ```javascript
 {

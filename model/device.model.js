@@ -6,12 +6,11 @@ var redisClient = redis.createClient({
 });
 var User = require("./user.model");
 let key = config.database.key;
-exports.createDevice = async function (username, meta) {
-    let index = await User.getIndex("username", username);
-    let userID = await User.getFieldValue("id", index);
+exports.createDevice = async function (meta) {
+    let userID = meta.userID;
 
     // save device's meta
-    redisClient.hset([key + "." + userID + ".device." + meta.deviceID, "location", request._id, "deviceID", meta.deviceID, "user", userID, "createTime", new Date().toISOString()]);
+    redisClient.hset([key + "." + userID + ".device." + meta.deviceID, "location", meta.location, "name", meta.name, "DeviceID", meta.DeviceID, "UserID", userID, "createTime", new Date().toISOString()]);
     // save user's devices id
     redisClient.rpush([key + "." + userID + "." + meta.deviceID, meta.deviceID]);
     // save the devices' owner
@@ -33,7 +32,11 @@ exports.getDeviceIndex = function(deviceID) {
     });
 }
 exports.ifDeviceIDExist = function (deviceID) {
-    let code = await getDeviceIndex(deviceID);
+    let code;
+    this.getDeviceIndex(deviceID)
+    .then((response) => {
+        code = response;
+    });
     return new Promise(function (resolve, reject) {
         return code != -1; // true==exist
     });
