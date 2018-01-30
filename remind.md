@@ -3,14 +3,27 @@
 ## Sign up for API Key
 
 Require field: 
+
 ```username```
 ```password```
 ```email```
 
 Generate:
+
 ```_id```
 ```_time```
 ```API Key```: give to user
+
+Example:
+
+```json
+{
+    username: "allen",
+    password: "123456",
+    email: "allen@example.com"
+}
+```
+
 ## Router 
 
 ```/authenticate```: authenticate user's information
@@ -54,9 +67,14 @@ location: "Neihu"
 ```weather.device.<id>```： devices' unique id
 ```weather.device.user```: devices' owner
 
-## God Mode
+Example: 
 
-use the user in `config.json` can modify all device and users.
+```json
+{
+    "name": "Test",
+    "location": "NHSH"
+}
+```
 
 ```javascript
 {
@@ -66,3 +84,7 @@ use the user in `config.json` can modify all device and users.
     deviceID: ""
 }
 ```
+
+## God Mode
+
+use the user in `config.json` can modify all device and users.

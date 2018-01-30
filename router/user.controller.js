@@ -27,7 +27,9 @@ var APIKey = async function () {
         user.keyBinary = keyBinary.toString("utf8");
         user.key = keyBinary.toString('base64').substr(0, 64);
     } while (await CheckField("key", user._key))
-    return user;
+    return new Promise((resolve, reject) => {
+        resolve(user);
+    });
 };
 
 exports.vaildUser = (req, res) => {
@@ -64,29 +66,26 @@ exports.createUser = async function (req, res) {
 
         });
         */
-        let keys = APIKey();
+        let keys = await APIKey();
         info._id = keys._id;
         info.username = req.jsonBody.username;
         info.email = req.jsonBody.email;
         info.password = crypto.createHash('sha256').update(req.jsonBody.password).digest('base64');
         info.APIKey = keys.key;
-        console.log(info);
 
         let username = await CheckField("username", info.username);
         let email = await CheckField("email", info.email);
-        console.log("username:"+username);
-        console.log("email:"+email);
         if (username) {
-            console.log("username");
             result.error = true;
             result.message = "Username existed!"
         } else if (email) {
-            console.log("email");
             result.error = true;
             result.message = "Email existed!"
         } else if (!result.error) {
+            /*
             User.createUser(info._id, info, (err, callback) => {
                 if (!err) {
+                    console.log("created")
                     result.error = false;
                     result.message = "User created";
                     result.key = info.APIKey;
@@ -94,7 +93,12 @@ exports.createUser = async function (req, res) {
                     result.error = true;
                     result.message = err;
                 }
-            })
+            });
+            */
+            User.createUser(info._id, info);
+            result.error = false;
+            result.message = "User created";
+            result.APIKey = info.APIKey;
         }
         res.json(result);
 }
@@ -103,9 +107,7 @@ exports.userLogin = async function (req, res) {
 
     let username = req.jsonBody.username;
     let password = crypto.createHash('sha256').update(req.jsonBody.password).digest('base64');
-    console.log("here")
     let index = await getIndex("username", username);
-    console.log("index:" +index)
     let pass = await getValue("password", index);
 
     if(pass == password) {
@@ -116,12 +118,9 @@ exports.userLogin = async function (req, res) {
             loginTime: new Date().toISOString()
         }
         let secret = config.secret;
-        console.log("work")
-        var token = jwt.sign(payload, secret, { expiresIn: '24h' }, (err, token)=> {
-            result.token = token;
-        });
         result.error = false;
         result.message = "Enjoy your token.";  
+        result.token = jwt.sign(payload, secret, { expiresIn: '24h' });
     } else {
         result.error = true;
         result.message = "Invaild username or password."

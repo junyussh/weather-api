@@ -4,8 +4,9 @@ var config = require("../config.json");
 var Data = require("./controller");
 var Device = require("./device.controller");
 var User = require("./user.controller");
-var jwt = require("jwt-simple");
+var jwt = require("jsonwebtoken");
 var key;
+
 router.use(function (req, res, next) {
     if (req.query.key) {
         key = "." + req.query.key;
@@ -59,7 +60,22 @@ router.route("/user")
     });
 router.route("/device")
     .post(function (req, res) {
-        Device.createDevice(req, res);
+        let token = req.query.token;
+        console.log(token);
+        try {
+            console.log("JWT")
+            var decoded = jwt.verify(token, config.secret);
+            // Vaild token
+            Device.createDevice(req, res);
+        } catch (err) {
+            // err
+            console.log("err")
+            let result = {};
+            result.error = true;
+            result.name = err.name;
+            result.message = err.message;
+            res.json(result);
+        }
     });
 router.route("/login")
     .post(function (req, res) {

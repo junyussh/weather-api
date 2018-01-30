@@ -13,9 +13,11 @@ exports.createDevice = async function (meta) {
     redisClient.hset([key + "." + userID + ".device." + meta.deviceID, "location", meta.location, "name", meta.name, "DeviceID", meta.DeviceID, "UserID", userID, "createTime", new Date().toISOString()]);
     // save user's devices id
     redisClient.rpush([key + "." + userID + "." + meta.deviceID, meta.deviceID]);
-    // save the devices' owner
+    // save the device's name
+    redisClient.rpush([key + ".device.name", meta.name]);
+    // save the device's owner
     redisClient.rpush([key + ".device.userID", userID]);
-    // save all devices' id
+    // save all device's id
     redisClient.rpush([key + ".device.id", meta.deviceID]);
 }
 exports.getAllDeviceID = function (callback) {
@@ -23,21 +25,34 @@ exports.getAllDeviceID = function (callback) {
         redisClient.lrange([key + ".device.id", 0, length], callback);
     });
 }
-exports.getDeviceIndex = function(deviceID) {
-    this.getAllDeviceID((err, _field) => {
-        let index = _field.indexOf(deviceID);
-        return new Promise(function(resolve, reject) {
-            resolve(index);
-        });
+exports.getAllDeviceFieldValue = function (field) {
+    return new Promise((resolve, reject) => {
+        redisClient.llen([key + ".device." + field], function (err, length) {
+            redisClient.lrange([key + ".device." + field, 0, length], function (err, list) {
+                resolve(list);
+            });
+        })
     });
 }
-exports.ifDeviceIDExist = function (deviceID) {
-    let code;
-    this.getDeviceIndex(deviceID)
-    .then((response) => {
-        code = response;
+
+exports.getDeviceValueIndex = function (field, value) {
+    return new Promise((resolve, reject) => {
+        this.getAllDeviceFieldValue(field)
+            .then((list) => {
+                let index = list.indexOf(value);
+                resolve(index);
+            });
     });
+}
+exports.ifDeviceFieldValueExist = async function (field, value) {
+    console.log("is it really exist?")
+    let code;
+    this.getDeviceValueIndex(field, value)
+        .then((response) => {
+            code = response;
+        });
     return new Promise(function (resolve, reject) {
+        console.log("status: "+(code != -1))
         return code != -1; // true==exist
     });
 }
