@@ -36,15 +36,14 @@ If failed to request the API server, you should resign a token.
 
 ## weather.users
 
-```weather.users.username```: save the username
-```weather.users.key```: save user's API key
-```weather.users.id```: save user's id
-```weather.<id>.device```: save user's devices id
-```weather.<id>.device.<deviceID>```: save device's meta
-```weather.device.<deviceID>```: save device data
-```weather.<id>```: save user's devices' meta and user's information
-```weather.device.id```: save all devices' id
-```weather.device.userID```: save the devices' owner
+`weather.user.username`: save the username
+`weather.user.key`: save user's API key
+`weather.user.id`: save user's id
+`weather.user.<UserID>`: save user's devices' meta and user's information
+`weather.device.id`: save user's devices id
+`weather.device.<deviceID>`: save device's meta
+`weather.device.id`: save all devices' id
+`weather.device.userID`: save the devices' owner
 
 ## weather.<id>
 

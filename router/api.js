@@ -63,7 +63,6 @@ router.route("/device")
         let token = req.query.token;
         console.log(token);
         try {
-            console.log("JWT")
             var decoded = jwt.verify(token, config.secret);
             // Vaild token
             Device.createDevice(req, res);
