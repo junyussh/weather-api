@@ -8,10 +8,10 @@ var jwt = require("jsonwebtoken");
 var CheckField = async function (field, value) {
     return await User.ifUserFieldExist(field, value);
 }
-var getIndex = async function(field, value) {
+var getIndex = async function (field, value) {
     return await User.getIndex(field, value);
 }
-var getValue = async function(field, index) {
+var getValue = async function (field, index) {
     return await User.getValue(field, index);
 }
 
@@ -66,42 +66,60 @@ exports.createUser = async function (req, res) {
 
         });
         */
-        let keys = await APIKey();
-        info._id = keys._id;
-        info.username = req.jsonBody.username;
-        info.email = req.jsonBody.email;
-        info.password = crypto.createHash('sha256').update(req.jsonBody.password).digest('base64');
-        info.APIKey = keys.key;
+    let keys = await APIKey();
+    info._id = keys._id;
+    info.username = req.jsonBody.username;
+    info.email = req.jsonBody.email;
+    info.password = crypto.createHash('sha256').update(req.jsonBody.password).digest('base64');
+    info.APIKey = keys.key;
 
-        let username = await CheckField("username", info.username);
-        let email = await CheckField("email", info.email);
-        if (username) {
-            result.error = true;
-            result.message = "Username existed!"
-        } else if (email) {
-            result.error = true;
-            result.message = "Email existed!"
-        } else if (!result.error) {
-            /*
-            User.createUser(info._id, info, (err, callback) => {
-                if (!err) {
-                    console.log("created")
-                    result.error = false;
-                    result.message = "User created";
-                    result.key = info.APIKey;
-                } else {
-                    result.error = true;
-                    result.message = err;
-                }
-            });
-            */
-            User.createUser(info._id, info);
-            result.error = false;
-            result.message = "User created";
-            result.APIKey = info.APIKey;
-        }
-        res.json(result);
+    let username = await CheckField("username", info.username);
+    let email = await CheckField("email", info.email);
+    if (username) {
+        result.error = true;
+        result.message = "Username existed!"
+    } else if (email) {
+        result.error = true;
+        result.message = "Email existed!"
+    } else if (!result.error) {
+        /*
+        User.createUser(info._id, info, (err, callback) => {
+            if (!err) {
+                console.log("created")
+                result.error = false;
+                result.message = "User created";
+                result.key = info.APIKey;
+            } else {
+                result.error = true;
+                result.message = err;
+            }
+        });
+        */
+        User.createUser(info._id, info);
+        result.error = false;
+        result.message = "User created";
+        result.APIKey = info.APIKey;
+    }
+    res.json(result);
 }
+
+exports.checkUser = async (username, password) => {
+    let pass = crypto.createHash('sha256').update(password).digest('base64');
+    let index = await getIndex("username", username);
+    let _password = await getValue("password", index);
+    
+    return new Promise((resolve, reject) => {
+        console.log(_password)
+        console.log(password)
+        console.log(pass == _password);
+        if (pass == _password) {
+            resolve(true);
+        } else {
+            resolve(false);
+        }
+    })
+}
+
 exports.userLogin = async function (req, res) {
     var result = {};
 
@@ -110,16 +128,17 @@ exports.userLogin = async function (req, res) {
     let index = await getIndex("username", username);
     let pass = await getValue("password", index);
 
-    if(pass == password) {
+    if (pass == password) {
         let userID = await getValue("id", index);
         let payload = {
             username: username,
+            password: password,
             userID: userID,
             loginTime: new Date().toISOString()
         }
         let secret = config.secret;
         result.error = false;
-        result.message = "Enjoy your token.";  
+        result.message = "Enjoy your token.";
         result.token = jwt.sign(payload, secret, { expiresIn: '24h' });
     } else {
         result.error = true;

@@ -13,7 +13,7 @@ var DeviceID = async function () {
     do {
         var idBinary = (new Buffer(uuid()));
         device.idBinary = idBinary.toString("utf8");
-        device._id = idBinary.toString('hex').substr(0, 8);
+        device._id = idBinary.toString('hex').substr(0, 10);
     } while (await CheckField("id", device._id));
     return new Promise((resolve, reject) => {
         resolve(device);

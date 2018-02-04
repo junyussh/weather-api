@@ -29,6 +29,32 @@ router.use(function (req, res, next) {
         next();
     }
 });
+
+async function middleHandler(req, res, next) {
+    let token = req.query.token;
+    let result = {};
+
+    try {
+        var decoded = jwt.verify(token, config.secret);
+        // Vaild token
+        let code = await User.checkUser(decoded.username, decoded.password);
+        console.log("code: "+code);
+        if (code) {
+            next();
+        } else {
+            result.error = true;
+            result.message = "Wrong user information"
+        }
+    } catch (err) {
+        // err
+        console.log("err")
+        result.error = true;
+        result.name = err.name;
+        result.message = err.message;
+    }
+    res.json(result);
+}
+
 router.route("/")
     .get(function (req, res) {
         if (req.query.device && req.query.key) {
@@ -59,6 +85,9 @@ router.route("/user")
         User.createUser(req, res);
     });
 router.route("/device")
+    .get(middleHandler, function(req, res) {
+        res.json({message: "get"});
+    })
     .post(function (req, res) {
         let token = req.query.token;
         console.log(token);

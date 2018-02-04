@@ -10,15 +10,13 @@ exports.createDevice = async function (meta) {
     let userID = meta.UserID;
     console.log(meta);
     // save device's meta
-    redisClient.hset([key + "." + userID + ".device." + meta.deviceID, "location", meta.location, "name", meta.name, "DeviceID", meta.DeviceID, "UserID", userID, "createTime", new Date().toISOString()]);
-    // save user's devices id
-    redisClient.rpush([key + "." + userID + "." + meta.deviceID, meta.deviceID]);
+    redisClient.hset([key + ".device." + meta.DeviceID, "location", meta.location, "name", meta.name, "DeviceID", meta.DeviceID, "UserID", userID, "createTime", new Date().toISOString()]);
     // save the device's name
     redisClient.rpush([key + ".device.name", meta.name]);
     // save the device's owner
     redisClient.rpush([key + ".device.userID", userID]);
     // save all device's id
-    redisClient.rpush([key + ".device.id", meta.deviceID]);
+    redisClient.rpush([key + ".device.id", meta.DeviceID]);
 }
 exports.getAllDeviceID = function (callback) {
     redisClient.llen([key + ".device.id"], function (err, length) {
