@@ -47,7 +47,7 @@ async function middleHandler(req, res, next) {
         }
     } catch (err) {
         // err
-        console.log("err")
+        console.log(err);
         result.error = true;
         result.name = err.name;
         result.message = err.message;

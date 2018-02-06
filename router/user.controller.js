@@ -104,15 +104,11 @@ exports.createUser = async function (req, res) {
 }
 
 exports.checkUser = async (username, password) => {
-    let pass = crypto.createHash('sha256').update(password).digest('base64');
     let index = await getIndex("username", username);
     let _password = await getValue("password", index);
-    
+
     return new Promise((resolve, reject) => {
-        console.log(_password)
-        console.log(password)
-        console.log(pass == _password);
-        if (pass == _password) {
+        if (password == _password) {
             resolve(true);
         } else {
             resolve(false);
