@@ -14,6 +14,13 @@ exports.createUser = function (key, request, callback) {
     redisClient.rpush([config.database.key + ".user.password", request.password]);
     redisClient.hset([config.database.key + ".user." + key, "username", request.username, "password", request.password, "key", request.APIKey, "email", request.email], callback);
 }
+exports.getUserInfo = (userID) => {
+    redisClient.hgetall([config.database.key + ".user." + userID], (err, value) => {
+        return new Promise((resolve) => {
+            resolve(value);
+        });
+    })
+}
 exports.getAllUserField = function (field, callback) {
     redisClient.llen([config.database.key + ".user." + field], function (err, length) {
         redisClient.lrange([config.database.key + ".user." + field, 0, length], callback);

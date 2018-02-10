@@ -78,12 +78,23 @@ router.route("/user")
     .get(function (req, res) {
         console.log("test");
         res.json({
-            message: "hello"
+            message: "hello",
         });
     })
     .post(function (req, res) {
         User.createUser(req, res);
     });
+ router.route("/user/:id")
+    .get(function (req, res) {
+        console.log("test");
+        res.json({
+            message: "hello",
+            id: req.params.id
+        });
+    })
+    .post(function (req, res) {
+        User.createUser(req, res);
+    }); 
 router.route("/device")
     .get(middleHandler, function(req, res) {
         res.json({message: "get"});
