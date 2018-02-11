@@ -75,7 +75,7 @@ router.route("/")
         Data.saveData(req, res);
     });
 router.route("/user")
-    .get(function (req, res) {
+    .get(middleHandler ,function (req, res) {
         console.log("test");
         res.json({
             message: "hello",
@@ -86,14 +86,12 @@ router.route("/user")
     });
  router.route("/user/:id")
     .get(function (req, res) {
-        console.log("test");
-        res.json({
-            message: "hello",
-            id: req.params.id
-        });
+        User.getUserInfo(req, res);
     })
     .post(function (req, res) {
-        User.createUser(req, res);
+        res.json({
+            message: "Here has nothing"
+        });
     }); 
 router.route("/device")
     .get(middleHandler, function(req, res) {

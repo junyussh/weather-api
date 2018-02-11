@@ -148,27 +148,26 @@ function FindArrayByValue(array, element) {
     let indices = [];
     var idx = array.indexOf(element);
     while (idx != -1) {
-      indices.push(idx);
-      idx = array.indexOf(element, idx + 1);
+        indices.push(idx);
+        idx = array.indexOf(element, idx + 1);
     }
     return indices;
 }
 
-exports.getUserInfo = async function(req, res) {
+exports.getUserInfo = async function (req, res) {
     let result = {};
-    if (await User.ifUserFieldExist("id", id)) {
-        let index = await User.getIndex("username", req.params.id);
-    let id = await User.getValue("id", index);
-    let all_userID = await Device.getAllDeviceFieldValue(userID);
-    let all_deviceID = await Device.getAllDeviceFieldValue(id);
+    if (await User.ifUserFieldExist("id", req.params.id)) {
+        let all_userID = await Device.getAllDeviceFieldValue("userID");
+        let all_deviceID = await Device.getAllDeviceFieldValue("id");
 
-    let index_device = FindArrayByValue(all_userID, req.params.id);
-    
-    result.username = await User.getValue("username", id);
-    result.userID = req.params.id;
-    result.devices = index_device.map((index)=> {
-        return all_deviceID[index];
-    })
+        let index_device = FindArrayByValue(all_userID, req.params.id);
+        let user = await User.getUserInfo(req.params.id);
+        console.log(user)
+        //result.username = user.username;
+        result.userID = req.params.id;
+        result.devices = index_device.map((index) => {
+            return all_deviceID[index];
+        });
     } else {
         result.error = true;
         result.message = "User ID not found";
