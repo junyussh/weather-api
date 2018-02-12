@@ -153,18 +153,37 @@ function FindArrayByValue(array, element) {
     }
     return indices;
 }
+exports.getSelf = async function (req, res) {
+    let result = {};
+
+    let all_userID = await Device.getAllDeviceFieldValue("userID");
+    let all_deviceID = await Device.getAllDeviceFieldValue("id");
+    let decoded = jwt.verify(req.query.token, config.secret);
+    let user = await User.getUserInfo(decoded.userID);
+    let index_device = FindArrayByValue(all_userID, decoded.userID);
+
+    result.username = user.username;
+    result.id = decoded.userID;
+    result.email = user.email;
+    result.key = user.key;
+    result.devices = index_device.map((index) => {
+        return all_deviceID[index];
+    });
+
+    res.json(result);
+}
 
 exports.getUserInfo = async function (req, res) {
     let result = {};
+
     if (await User.ifUserFieldExist("id", req.params.id)) {
         let all_userID = await Device.getAllDeviceFieldValue("userID");
         let all_deviceID = await Device.getAllDeviceFieldValue("id");
-
         let index_device = FindArrayByValue(all_userID, req.params.id);
         let user = await User.getUserInfo(req.params.id);
-        console.log(user)
-        //result.username = user.username;
-        result.userID = req.params.id;
+
+        result.username = user.username;
+        result.id = req.params.id;
         result.devices = index_device.map((index) => {
             return all_deviceID[index];
         });
@@ -172,5 +191,6 @@ exports.getUserInfo = async function (req, res) {
         result.error = true;
         result.message = "User ID not found";
     }
+
     res.json(result);
 }

@@ -38,12 +38,12 @@ async function middleHandler(req, res, next) {
         var decoded = jwt.verify(token, config.secret);
         // Vaild token
         let code = await User.checkUser(decoded.username, decoded.password);
-        console.log("code: "+code);
         if (code) {
             next();
         } else {
             result.error = true;
-            result.message = "Wrong user information"
+            result.message = "Wrong user information";
+            res.json(result);
         }
     } catch (err) {
         // err
@@ -51,8 +51,8 @@ async function middleHandler(req, res, next) {
         result.error = true;
         result.name = err.name;
         result.message = err.message;
+        res.json(result);
     }
-    res.json(result);
 }
 
 router.route("/")
@@ -76,10 +76,7 @@ router.route("/")
     });
 router.route("/user")
     .get(middleHandler ,function (req, res) {
-        console.log("test");
-        res.json({
-            message: "hello",
-        });
+        User.getSelf(req, res);
     })
     .post(function (req, res) {
         User.createUser(req, res);

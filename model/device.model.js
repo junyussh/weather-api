@@ -8,7 +8,6 @@ var User = require("./user.model");
 let key = config.database.key;
 exports.createDevice = async function (meta) {
     let userID = meta.UserID;
-    console.log(meta);
     // save device's meta
     redisClient.hset([key + ".device." + meta.DeviceID, "location", meta.location, "name", meta.name, "DeviceID", meta.DeviceID, "UserID", userID, "createTime", new Date().toISOString()]);
     // save the device's name
@@ -17,6 +16,13 @@ exports.createDevice = async function (meta) {
     redisClient.rpush([key + ".device.userID", userID]);
     // save all device's id
     redisClient.rpush([key + ".device.id", meta.DeviceID]);
+    // save the device's fields
+    var multi = redisClient.multi();
+    meta.fields.push("time");
+    meta.fields.forEach((fields) => {
+        multi.rpush(key + ".device." + meta.DeviceID + ".field", fields);
+    });
+    multi.exec();
 }
 exports.getAllDeviceID = function (callback) {
     redisClient.llen([key + ".device.id"], function (err, length) {

@@ -39,13 +39,17 @@ exports.createDevice = async function (req, res) {
             location: req.jsonBody.location,
             name: req.jsonBody.name,
             DeviceID: device._id,
-            UserID: decoded.userID
+            UserID: decoded.userID,
+            fields: req.jsonBody.fields
         };
-        console.log(meta)
         Device.createDevice(meta);
         result.error = false;
         result.message = "Device " + meta.name + " has created";
         result.DeviceID = meta.DeviceID;
     }
     res.json(result);
+}
+
+exports.saveData = function(req, res) {
+    
 }
