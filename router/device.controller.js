@@ -2,6 +2,7 @@ var app = require("express");
 var crypto = require("crypto");
 var uuid = require("uuid/v1");
 var Device = require("../model/device.model");
+var User = require("../model/user.model");
 var config = require("../config.json");
 var jwt = require("jsonwebtoken");
 
@@ -51,5 +52,22 @@ exports.createDevice = async function (req, res) {
 }
 
 exports.saveData = function(req, res) {
-    
+    let result = {};
+    if(req.jsonBody.key) {
+        let index = await User.getIndex("key", req.jsonBody.key);
+        let userID = await User.getValue("id", index);
+        let user = await User.getUserInfo(userID);
+
+        if(user.key == req.jsonBody.key) {
+            let fields = 
+        } else {
+            result.error = true;
+            result.message = "Wrong key";
+        }
+    } else {
+        result.error = true;
+        result.message = "Key is required.";
+    }
+
+    res.json(result);
 }

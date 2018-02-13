@@ -18,7 +18,7 @@ exports.createDevice = async function (meta) {
     redisClient.rpush([key + ".device.id", meta.DeviceID]);
     // save the device's fields
     var multi = redisClient.multi();
-    meta.fields.push("time");
+    meta.fields.push("created_at");
     meta.fields.forEach((fields) => {
         multi.rpush(key + ".device." + meta.DeviceID + ".field", fields);
     });
@@ -53,4 +53,15 @@ exports.ifDeviceFieldValueExist = async function (field, value) {
     return new Promise(function (resolve, reject) {
         resolve(code != -1); // true==exist
     });
+}
+
+exports.getDeviceFields = function (DeviceID) {
+    return new Promise((resolve) => {
+        let length = redisClient.llen([key + ".device." + DeviceID + ".field"], (err, callback) => {
+            return callback;
+        });
+        let fields = redisClient.lrange([key + ".device." + DeviceID + ".field", 0, length], (err, callback) => { return callback });
+        console.log(fields);
+        resolve(fields);
+    })
 }

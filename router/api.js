@@ -111,6 +111,10 @@ router.route("/device")
             res.json(result);
         }
     });
+router.route("/device/:id")
+    .post(function (req, res) {
+        
+    });
 router.route("/login")
     .post(function (req, res) {
         User.userLogin(req, res);
