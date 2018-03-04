@@ -59,7 +59,7 @@ exports.saveData = function(req, res) {
         let user = await User.getUserInfo(userID);
 
         if(user.key == req.jsonBody.key) {
-            let fields = 
+            let fields = await Device.getDeviceFields(req.params.id);
         } else {
             result.error = true;
             result.message = "Wrong key";

@@ -65,3 +65,9 @@ exports.getDeviceFields = function (DeviceID) {
         resolve(fields);
     })
 }
+
+exports.saveData = function (data, fields, DeviceID) {
+    fields.map((obj) => {
+        redisClient.rpush([key + ".device." + DeviceID + "." + obj, data[obj]]);
+    })
+}
