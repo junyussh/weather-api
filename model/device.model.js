@@ -18,7 +18,7 @@ exports.createDevice = async function (meta) {
     redisClient.rpush([key + ".device.id", meta.DeviceID]);
     // save the device's fields
     var multi = redisClient.multi();
-    meta.fields.push("created_at");
+    meta.fields.push("created");
     meta.fields.forEach((fields) => {
         multi.rpush(key + ".device." + meta.DeviceID + ".field", fields);
     });
@@ -56,18 +56,75 @@ exports.ifDeviceFieldValueExist = async function (field, value) {
 }
 
 exports.getDeviceFields = function (DeviceID) {
-    return new Promise((resolve) => {
-        let length = redisClient.llen([key + ".device." + DeviceID + ".field"], (err, callback) => {
-            return callback;
-        });
-        let fields = redisClient.lrange([key + ".device." + DeviceID + ".field", 0, length], (err, callback) => { return callback });
-        console.log(fields);
-        resolve(fields);
+    return new Promise(async (resolve_out) => {
+        // get fields length
+        let length = async function () {
+            return new Promise((resolve) => {
+                redisClient.llen([key + ".device." + DeviceID + ".field"], (err, callback) => {
+                    resolve(callback);
+                })
+            })
+        };
+        // get fields content
+        let fields = async function () {
+            return new Promise(async (resolve) => {
+                redisClient.lrange([key + ".device." + DeviceID + ".field", 0, await length()], (err, callback) => {
+                    resolve(callback);
+                })
+            })
+        };
+        resolve_out(await fields());
     })
+}
+
+exports.getDeviceInfos = function (DeviceID) {
+    return new Promise((resolve) => {
+        redisClient.hgetall([key + ".device." + DeviceID], (err, value) => {
+            resolve(value);
+        });
+    });
 }
 
 exports.saveData = function (data, fields, DeviceID) {
     fields.map((obj) => {
         redisClient.rpush([key + ".device." + DeviceID + "." + obj, data[obj]]);
+    })
+}
+
+exports.getData = async function (size, fields, DeviceID) {
+    return new Promise(async (resolve) => {
+        let data = [], start;
+        let length = async function () {
+            return new Promise((resolve) => {
+                redisClient.llen([key + ".device." + DeviceID + ".created"], (err, callback) => {
+                    resolve(callback);
+                })
+            })
+        };
+
+        // define the number of data
+        let len = await length();
+        if (size) {
+            start = len - size;
+        } else {
+            start = 0;
+        }
+        let counter = 1;
+
+        for (let i = 0; i < len-start; i++) data[i] = {}; // create object in array
+
+        fields.map(async (obj) => { // push value to array
+            redisClient.lrange([key + ".device." + DeviceID + "." + obj, start, len], (err, callback) => {
+                let k = 0;
+                callback.map((value) => {
+                    data[k][obj] = value; // push value to data array in object
+                    k++;
+                });
+                counter++;
+                if (counter == obj.length) { // if loop ends, return data
+                    resolve(data);
+                }
+            });
+        });
     })
 }

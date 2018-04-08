@@ -17,12 +17,17 @@ router.use(function (req, res, next) {
     }
     if (req.method == "POST") {
         var data = "";
+        // Fetch post data
         req.on('data', function (chunk) {
             data += chunk
         });
         req.on('end', function () {
             req.rawBody = data;
-            req.jsonBody = JSON.parse(data);
+            try {
+                req.jsonBody = JSON.parse(data);
+            } catch(e) {
+                console.log(e);
+            }
             next();
         });
     } else {
@@ -112,8 +117,11 @@ router.route("/device")
         }
     });
 router.route("/device/:id")
-    .post(function (req, res) {
-        
+    .get(function(req, res) {
+        Device.getData(req, res);
+    })
+    .post(middleHandler, function (req, res) {
+        Device.saveData(req, res);
     });
 router.route("/login")
     .post(function (req, res) {

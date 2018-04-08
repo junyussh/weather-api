@@ -51,23 +51,47 @@ exports.createDevice = async function (req, res) {
     res.json(result);
 }
 
-exports.saveData = function(req, res) {
+exports.saveData = async function (req, res) {
     let result = {};
-    if(req.jsonBody.key) {
+    if (req.jsonBody.key) {
+        let DeviceID = req.params.id;
+        let device = await Device.getDeviceInfos(DeviceID);
         let index = await User.getIndex("key", req.jsonBody.key);
         let userID = await User.getValue("id", index);
         let user = await User.getUserInfo(userID);
+        let data = req.jsonBody;
 
-        if(user.key == req.jsonBody.key) {
-            let fields = await Device.getDeviceFields(req.params.id);
+        let token = req.query.token;
+        var decoded = jwt.verify(token, config.secret);
+
+        // Authenticate Device's User
+        if (user.key == data.key && userID == device.UserID && decoded.userID == device.UserID) {
+            let fields = await Device.getDeviceFields(req.params.id); // get device's fields
+
+            data["created"] = new Date().toISOString(); // Created time
+            Device.saveData(data, fields, DeviceID);
+
+            result.error = false;
+            result.message = "Data saved.";
         } else {
             result.error = true;
-            result.message = "Wrong key";
+            result.message = "Permission denied!";
         }
     } else {
         result.error = true;
         result.message = "Key is required.";
     }
 
+    res.json(result);
+}
+
+exports.getData = async function(req,res) {
+    let result = {};
+    let fields = await Device.getDeviceFields(req.params.id);
+    let DeviceID = req.params.id;
+    let device = await Device.getDeviceInfos(DeviceID);
+
+    result.info = device;
+    result.data = await Device.getData(req.query.size, fields, DeviceID);
     res.json(result);
 }
