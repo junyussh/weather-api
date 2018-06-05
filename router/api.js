@@ -122,6 +122,9 @@ router.route("/device/:id")
     })
     .post(middleHandler, function (req, res) {
         Device.saveData(req, res);
+    })
+    .delete(middleHandler, function(req, res) {
+        Device.deleteDevice(req, res);
     });
 router.route("/login")
     .post(function (req, res) {

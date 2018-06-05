@@ -18,7 +18,7 @@ exports.createDevice = async function (meta) {
     redisClient.rpush([key + ".device.id", meta.DeviceID]);
     // save the device's fields
     var multi = redisClient.multi();
-    meta.fields.push("created");
+    meta.fields.push("created_at");
     meta.fields.forEach((fields) => {
         multi.rpush(key + ".device." + meta.DeviceID + ".field", fields);
     });
@@ -104,14 +104,14 @@ exports.getData = async function (size, fields, DeviceID) {
 
         // define the number of data
         let len = await length();
-        if (size) {
+        if (size < len) {
             start = len - size;
         } else {
             start = 0;
         }
         let counter = 1;
 
-        for (let i = 0; i < len-start; i++) data[i] = {}; // create object in array
+        for (let i = 0; i < len - start; i++) data[i] = {}; // create object in array
 
         fields.map(async (obj) => { // push value to array
             redisClient.lrange([key + ".device." + DeviceID + "." + obj, start, len], (err, callback) => {
@@ -127,4 +127,32 @@ exports.getData = async function (size, fields, DeviceID) {
             });
         });
     })
+}
+
+exports.deleteDevice = async function (DeviceID) {
+    let fields = await this.getDeviceFields(DeviceID);
+    // delete device fields' data
+    fields.map((obj) => {
+        redisClient.del([key + ".device." + DeviceID + "." + obj]);
+    })
+    // delete device's field list
+    redisClient.del([key + ".device." + DeviceID + ".field"]);
+    let index = await this.getDeviceValueIndex("id", DeviceID);
+    let flag = new Date().toISOString();
+    // delete device id from id list
+    redisClient.lrem([key + ".device.id"], 1, DeviceID, (err, callback)=> {
+        console.log("error");
+        console.log(err);
+    });
+    // delete device userid
+    console.log("userid")
+    redisClient.lset([key + ".device.userID"], index, flag);
+    redisClient.lrem([key + ".device.userID"], 1, flag);
+    // delete device name
+    console.log("name")
+    redisClient.lset([key + ".device.name"], index, flag);
+    redisClient.lrem([key + ".device.name"], 1, flag);
+    // delete device information
+    redisClient.del([key + ".device." + DeviceID]);
+    // all keys of the device has been deleted
 }
