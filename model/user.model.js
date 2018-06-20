@@ -6,13 +6,12 @@ var redisClient = redis.createClient({
     password: config.database.password
 });
 exports.createUser = function (key, request, callback) {
-    console.log(request);
     redisClient.rpush([config.database.key + ".user.id", request._id])
     redisClient.rpush([config.database.key + ".user.username", request.username]);
     redisClient.rpush([config.database.key + ".user.key", request.APIKey]);
     redisClient.rpush([config.database.key + ".user.email", request.email]);
     redisClient.rpush([config.database.key + ".user.password", request.password]);
-    redisClient.hset([config.database.key + ".user." + key, "username", request.username, "password", request.password, "key", request.APIKey, "email", request.email], callback);
+    redisClient.hmset([config.database.key + ".user." + key, "username", request.username, "password", request.password, "key", request.APIKey, "email", request.email], callback);
 }
 exports.getUserInfo = function (userID) {
     return new Promise((resolve) => {

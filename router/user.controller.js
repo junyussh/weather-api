@@ -99,6 +99,7 @@ exports.createUser = async function (req, res) {
         User.createUser(info._id, info);
         result.error = false;
         result.message = "User created";
+        result._id = info._id;
         result.APIKey = info.APIKey;
     }
     res.json(result);
