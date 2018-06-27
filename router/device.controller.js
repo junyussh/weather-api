@@ -23,30 +23,36 @@ var DeviceID = async function () {
 
 exports.createDevice = async function (req, res) {
     let result = {};
-
-    // Vaild token
-    // if the device name exist
-    let exist = await CheckField('name', req.jsonBody.name);
-    if (exist) {
+    let token = req.query.token;
+    var decoded = jwt.verify(token, config.secret);
+    try {
+        let user = await User.getUserInfo(decoded.userID);
+    } catch(e) {
         result.error = true;
-        result.message = "Device name existed!";
-    } else {
-        let token = req.query.token;
-        var decoded = jwt.verify(token, config.secret);
-        // console.log(decoded)
-        // Generate device's information
-        let device = await DeviceID();
-        let meta = {
-            location: req.jsonBody.location,
-            name: req.jsonBody.name,
-            DeviceID: device._id,
-            UserID: decoded.userID,
-            fields: req.jsonBody.fields
-        };
-        Device.createDevice(meta);
-        result.error = false;
-        result.message = "Device " + meta.name + " has created";
-        result.DeviceID = meta.DeviceID;
+        result.message = e;
+    }
+    if (decoded.userID == user.userID) {
+        // Vaild token
+        // if the device name exist
+        let exist = await CheckField('name', req.jsonBody.name);
+        if (exist) {
+            result.error = true;
+            result.message = "Device name existed!";
+        } else {
+            // Generate device's information
+            let device = await DeviceID();
+            let meta = {
+                location: req.jsonBody.location,
+                name: req.jsonBody.name,
+                DeviceID: device._id,
+                UserID: decoded.userID,
+                fields: req.jsonBody.fields
+            };
+            Device.createDevice(meta);
+            result.error = false;
+            result.message = "Device " + meta.name + " has created";
+            result.DeviceID = meta.DeviceID;
+        }
     }
     res.json(result);
 }
@@ -106,6 +112,7 @@ exports.deleteDevice = async function (req, res) {
         var decoded = jwt.verify(req.query.token, config.secret);
 
         // Authenticate Device's User
+        console.log(device)
         if (decoded.userID == device.UserID) {
             Device.deleteDevice(DeviceID);
 

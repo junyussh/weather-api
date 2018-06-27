@@ -9,7 +9,7 @@ let key = config.database.key;
 exports.createDevice = async function (meta) {
     let userID = meta.UserID;
     // save device's meta
-    redisClient.hset([key + ".device." + meta.DeviceID, "location", meta.location, "name", meta.name, "DeviceID", meta.DeviceID, "UserID", userID, "createTime", new Date().toISOString()]);
+    redisClient.hmset([key + ".device." + meta.DeviceID, "location", meta.location, "name", meta.name, "DeviceID", meta.DeviceID, "UserID", userID, "createTime", new Date().toISOString()]);
     // save the device's name
     redisClient.rpush([key + ".device.name", meta.name]);
     // save the device's owner
